@@ -1,0 +1,22 @@
+{
+    "DEFAULT":{
+        "buttons":[
+            {"body":"Asesoria"},
+            {"body":"Soporte"}
+        ]
+        },
+    "STEP_1":{
+    "buttons":[
+        {"body":"Facturación"},
+        {"body":"Error Sistema"},
+        {"body":"Configuraciones"}
+    ]
+    },
+    "STEP_1_2":{
+        "buttons":[
+            {"body":"Necesario"},
+            {"body":"Critico"}            
+        ]
+        }
+
+}

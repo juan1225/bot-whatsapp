@@ -12,7 +12,7 @@ const { middlewareClient } = require('./middleware/client')
 const { generateImage, cleanNumber, checkEnvFile, createClient, isValidNumber } = require('./controllers/handle')
 const { connectionReady, connectionLost } = require('./controllers/connection')
 const { saveMedia } = require('./controllers/save')
-const { getMessages, responseMessages, bothResponse } = require('./controllers/flows')
+const { getMessages, responseMessages, validamns, bothResponse } = require('./controllers/flows')
 const { sendMedia, sendMessage, lastTrigger, sendMessageButton, readChat } = require('./controllers/send')
 const app = express();
 app.use(cors())
@@ -110,16 +110,18 @@ const listenMessage = () => client.on('message', async msg => {
 
     //Si quieres tener un mensaje por defecto
     if (process.env.DEFAULT_MESSAGE === 'true') {
+        const val_mns  = await validamns(number)
         const response = await responseMessages('DEFAULT')
+        var val_defa = 0;
+        
+        if(val_mns<=1){        
         await sendMessage(client, from, response.replyMessage, response.trigger);
 
-        /**
-         * Si quieres enviar botones
-         */
         if(response.hasOwnProperty('actions')){
             const { actions } = response;
             await sendMessageButton(client, from, null, actions);
         }
+        }    
         return
     }
 });

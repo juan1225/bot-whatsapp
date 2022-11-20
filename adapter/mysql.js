@@ -1,12 +1,22 @@
 const {connection} = require('../config/mysql')
+const stepsReponse = require('../flow/buttons.json')
 const DATABASE_NAME = process.env.SQL_DATABASE || 'db_test'
 
 getData = (message = '', callback) => connection.query(
     `SELECT * FROM ${DATABASE_NAME}.initial WHERE keywords LIKE '%${message}%'  LIMIT 1`,
     (error, results
         ) => {
-    const [response] = results
+    const [response] = results   
     const key = response?.option_key || null
+    callback(key)
+});
+
+getValmsn = (message = '', callback) => connection.query(
+    `SELECT count(*)conteo FROM ${DATABASE_NAME}.messages where number = '${message}' and date BETWEEN DATE_SUB(NOW(), INTERVAL 2 HOUR) AND NOW()`,
+    (error, results
+        ) => {
+    const [response] = results
+    const key = response?.conteo || null
     callback(key)
 });
 
@@ -16,12 +26,24 @@ getReply = (option_key = '', callback) => connection.query(
     (error, results
         ) => {
     const [response] = results;
-    console.log(response)
-    const value = {
-        replyMessage:response?.replyMessage || '',
-        trigger:response?.trigger || '',
-        media:response?.media || ''
-     
+    var value = '';
+    var actions = '';
+
+    if(response?.actions != ''){
+        actions = JSON.parse(response?.actions)
+        actions.buttons = stepsReponse[option_key].buttons
+        value = {
+            replyMessage:response?.replyMessage || '',
+            trigger:response?.trigger || '',
+            media:response?.media || '',
+            actions:actions || ''     
+        }
+    }else{
+        value = {
+            replyMessage:response?.replyMessage || '',
+            trigger:response?.trigger || '',
+            media:response?.media || ''  
+        }
     }
     callback(value)
 });
@@ -47,10 +69,10 @@ getMessages = ( number ) => new Promise((resolve,reejct) => {
     }
 })
 
-saveMessageMysql = ( message, date, trigger, number ) => new Promise((resolve,reejct) => {
+saveMessageMysql = ( message, trigger, number ) => new Promise((resolve,reejct) => {
     try {
         connection.query(
-        `INSERT INTO ${DATABASE_NAME}.messages  `+"( `message`, `date`, `trigger`, `number`)"+` VALUES ('${message}','${date}','${trigger}', '${number}')` , (error, results) => {
+        `INSERT INTO ${DATABASE_NAME}.messages  `+"( `message`, `date`, `trigger`, `number`)"+` VALUES ('${message}',now(),'${trigger}', '${number}')` , (error, results) => {
             if(error) {
                 //TODO esta parte es mejor incluirla directamente en el archivo .sql template
                 console.log('DEBES DE CREAR LA TABLA DE MESSAGE')
@@ -62,8 +84,6 @@ saveMessageMysql = ( message, date, trigger, number ) => new Promise((resolve,re
                 //     })
                 // }
             }
-            console.log('Saved')
-            console.log( results )
             resolve(results)
         })
     } catch (error) {
@@ -71,4 +91,4 @@ saveMessageMysql = ( message, date, trigger, number ) => new Promise((resolve,re
     }
 })
 
-module.exports = {getData, getReply, saveMessageMysql}
+module.exports = {getData,getValmsn, getReply, saveMessageMysql}

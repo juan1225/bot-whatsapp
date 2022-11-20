@@ -1,4 +1,4 @@
-const {get, reply, getIA} = require('../adapter')
+const {get, reply, valmsn, getIA} = require('../adapter')
 const {saveExternalFile, checkIsUrl} = require('./handle')
 
 const getMessages = async (message) => {
@@ -15,6 +15,11 @@ const responseMessages = async (step) => {
     return data
 }
 
+const validamns = async (number) => {
+    const data = await valmsn(number)
+    return data
+}
+
 const bothResponse = async (message) => {
     const data = await getIA(message)
     if(data && data.media){
@@ -25,4 +30,4 @@ const bothResponse = async (message) => {
 }
 
 
-module.exports = { getMessages, responseMessages, bothResponse }
+module.exports = { getMessages, responseMessages, validamns, bothResponse }

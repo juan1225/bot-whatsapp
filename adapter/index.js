@@ -1,4 +1,4 @@
-const { getData, getReply, saveMessageMysql } = require('./mysql')
+const { getData, getReply, getValmsn, saveMessageMysql } = require('./mysql')
 const { saveMessageJson } = require('./jsonDb')
 const { getDataIa } = require('./diaglogflow')
 const  stepsInitial = require('../flow/initial.json')
@@ -18,7 +18,7 @@ const get = (message) => new Promise((resolve, reject) => {
      * Si usas MYSQL
      */
     if (process.env.DATABASE === 'mysql') {
-        getData(message, (dt) => {
+        getData( message || 'null', (dt) => {
             resolve(dt)
         });
     }
@@ -65,6 +65,12 @@ const getIA = (message) => new Promise((resolve, reject) => {
     }
 })
 
+const valmsn = (number) => new Promise((resolve, reject) => {
+    getValmsn(number, (dt) => {
+        resolve(dt)
+    });
+})
+
 /**
  * 
  * @param {*} message 
@@ -87,4 +93,4 @@ const saveMessage = ( message, trigger, number  ) => new Promise( async (resolve
     }
 })
 
-module.exports = { get, reply, getIA, saveMessage }
+module.exports = { get, reply, valmsn, getIA, saveMessage }

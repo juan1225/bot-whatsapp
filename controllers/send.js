@@ -74,7 +74,7 @@ const sendMessageButton = async (client, number = null, text = null, actionButto
     let button = new Buttons(message,[...buttons], title, footer);
     client.sendMessage(number, button);
 
-    console.log(`⚡⚡⚡ Enviando mensajes....`);
+    console.log(`⚡⚡⚡ Enviando mensajes botones....`);
 }
 
 
