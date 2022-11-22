@@ -6,7 +6,14 @@ getData = (message = '', callback) => connection.query(
     `SELECT * FROM ${DATABASE_NAME}.initial WHERE keywords LIKE '%${message}%'  LIMIT 1`,
     (error, results
         ) => {
-    const [response] = results   
+            
+    var resp = '';
+    if (results === undefined) {
+        resp = ''
+        }else{
+        resp = results
+        }
+    const [response] = resp
     const key = response?.option_key || null
     callback(key)
 });
@@ -73,7 +80,9 @@ saveMessageMysql = ( message, trigger, number ) => new Promise((resolve,reejct) 
     try {
         connection.query(
         `INSERT INTO ${DATABASE_NAME}.messages  `+"( `message`, `date`, `trigger`, `number`)"+` VALUES ('${message}',now(),'${trigger}', '${number}')` , (error, results) => {
+            console.log('-----------------------------------',message)
             if(error) {
+                console.log('-----------------------------------',message)
                 //TODO esta parte es mejor incluirla directamente en el archivo .sql template
                 console.log('DEBES DE CREAR LA TABLA DE MESSAGE')
                 // if( error.code === 'ER_NO_SUCH_TABLE' ){
