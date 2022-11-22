@@ -14,6 +14,7 @@ const { connectionReady, connectionLost } = require('./controllers/connection')
 const { saveMedia } = require('./controllers/save')
 const { getMessages, responseMessages, validamns, bothResponse } = require('./controllers/flows')
 const { sendMedia, sendMessage, lastTrigger, sendMessageButton, readChat } = require('./controllers/send')
+const {saveExternalFile, checkIsUrl} = require('./controllers/handle')
 const app = express();
 app.use(cors())
 app.use(express.json())
@@ -29,6 +30,20 @@ app.use('/', require('./routes/web'))
  */
 const listenMessage = () => client.on('message', async msg => {
     const { from, body, hasMedia } = msg;
+
+/**
+ * api rest whatsapp
+ */
+    app.post('/wts', async function (req, res) {  
+    const { message, number, media } = req.body
+    await sendMessage(client, number, message);
+        if(media){
+            const file = checkIsUrl(media) ? await saveExternalFile(media) : '';
+            if(file)
+            sendMedia(client, number, file);
+        }
+        res.send('Saludos desde express');
+    });
 
     if(!isValidNumber(from)){
         return
