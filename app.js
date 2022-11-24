@@ -31,20 +31,6 @@ app.use('/', require('./routes/web'))
 const listenMessage = () => client.on('message', async msg => {
     const { from, body, hasMedia } = msg;
 
-/**
- * api rest whatsapp
- */
-    app.post('/wts', async function (req, res) {  
-    const { message, number, media } = req.body
-    await sendMessage(client, number, message);
-        if(media){
-            const file = checkIsUrl(media) ? await saveExternalFile(media) : '';
-            if(file)
-            sendMedia(client, number, file);
-        }
-        res.send('Saludos desde express');
-    });
-
     if(!isValidNumber(from)){
         return
     }
@@ -171,8 +157,17 @@ client.on('authenticated', () => {
 });
 
     client.initialize();
-
-
+// api whatsapp
+    app.post('/wts', async function (req, res) {  
+        const { message, number, media } = req.body
+        await sendMessage(client, number, message);
+            if(media){
+                const file = checkIsUrl(media) ? await saveExternalFile(media) : '';
+                if(file)
+                sendMedia(client, number, file);
+            }
+            res.send('Saludos desde express');
+    })
 
 /**
  * Verificamos si tienes un gesto de db
