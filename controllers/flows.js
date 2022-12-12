@@ -1,4 +1,4 @@
-const {get, reply, valmsn, getIA} = require('../adapter')
+const {get, reply, valmsn, ngs, ValidaCliente, CreaMapa, ActualizaMapa} = require('../adapter')
 const {saveExternalFile, checkIsUrl} = require('./handle')
 
 const getMessages = async (message) => {
@@ -20,14 +20,30 @@ const validamns = async (number) => {
     return data
 }
 
-const bothResponse = async (message) => {
-    const data = await getIA(message)
-    if(data && data.media){
-        const file = await saveExternalFile(data.media)
-        return {...data,...{media:file}}
-    }
+const Negocios = async (id) => {
+    const data = await ngs(id)
     return data
 }
 
+const ValCli = async (numero) => {   
+    const data = await ValidaCliente(numero)
+    return data
+}
 
-module.exports = { getMessages, responseMessages, validamns, bothResponse }
+const CreaMap = async (numero) => {
+    var sql = `DELETE FROM initial WHERE telefono ='${numero}' `
+    await ActualizaMapa(sql)  
+    
+    var sql = `DELETE FROM tmp_ped_wts WHERE celular ='${numero}' ` 
+    await ActualizaMapa(sql) 
+
+    const data = await CreaMapa(numero)    
+    return data
+}
+
+const ActMapa = async (sql) => {    
+    const data = await ActualizaMapa(sql)    
+    return data
+}
+
+module.exports = { getMessages, responseMessages, validamns, Negocios, ValCli, CreaMap, ActMapa }

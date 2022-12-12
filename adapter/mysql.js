@@ -19,7 +19,7 @@ getData = (message = '', callback) => connection.query(
 });
 
 getValmsn = (message = '', callback) => connection.query(
-    `SELECT count(*)conteo FROM ${DATABASE_NAME}.messages where number = '${message}' and date BETWEEN DATE_SUB(NOW(), INTERVAL 2 HOUR) AND NOW()`,
+    `SELECT count(*)conteo FROM ${DATABASE_NAME}.messages where number = '${message}' and date BETWEEN DATE_SUB(NOW(), INTERVAL 1 HOUR) AND NOW()`,
     (error, results
         ) => {
     const [response] = results
@@ -35,7 +35,6 @@ getReply = (option_key = '', callback) => connection.query(
     const [response] = results;
     var value = '';
     var actions = '';
-
     if(response?.actions != ''){
         actions = JSON.parse(response?.actions)
         actions.buttons = stepsReponse[option_key].buttons
@@ -63,7 +62,6 @@ getMessages = ( number ) => new Promise((resolve,reejct) => {
                 console.log(error)
             }
             const [response] = results;
-            console.log(response)
             const value = {
                 replyMessage:response?.replyMessage || '',
                 trigger:response?.trigger || '',
@@ -80,9 +78,9 @@ saveMessageMysql = ( message, trigger, number ) => new Promise((resolve,reejct) 
     try {
         connection.query(
         `INSERT INTO ${DATABASE_NAME}.messages  `+"( `message`, `date`, `trigger`, `number`)"+` VALUES ('${message}',now(),'${trigger}', '${number}')` , (error, results) => {
-            console.log('-----------------------------------',message)
+          
             if(error) {
-                console.log('-----------------------------------',message)
+               
                 //TODO esta parte es mejor incluirla directamente en el archivo .sql template
                 console.log('DEBES DE CREAR LA TABLA DE MESSAGE')
                 // if( error.code === 'ER_NO_SUCH_TABLE' ){
@@ -100,4 +98,34 @@ saveMessageMysql = ( message, trigger, number ) => new Promise((resolve,reejct) 
     }
 })
 
-module.exports = {getData,getValmsn, getReply, saveMessageMysql}
+getNegocio = (id,callback) => connection.query(
+    `SELECT id,outlet_name,address FROM ${DATABASE_NAME}.tbl_outlets where id = '${id}'`,
+    (error, results
+        ) => {
+    const [response] = results
+    callback(response)
+});
+
+getValidaCliente = (numero = '', callback) => connection.query(
+    `SELECT id,name,address FROM tbl_customers WHERE phone ='${numero.replace(/57|@c.us/g, '')}' order by id  desc limit 1`,
+    ( error, results ) => {
+        
+     if(results.length >0){
+        console.log("entro")
+         connection.query(`UPDATE initial SET estado = 'A' where telefono = '${numero}' and option_key in('STEP_3','STEP_4')` ,
+          (error, results) => {})
+          callback(results)
+     }else{   
+     
+             callback('STEP_3')
+      
+     }
+
+});
+
+getCreaMapa = (sql = '', callback) => connection.query(
+    sql,(error, results) => {
+    callback(results)
+});
+
+module.exports = {getData, getValmsn, getReply, saveMessageMysql, getNegocio, getValidaCliente, getCreaMapa}

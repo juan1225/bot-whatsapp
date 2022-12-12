@@ -1,22 +1,49 @@
 {
     "DEFAULT":{
         "buttons":[
-            {"body":"Asesoria"},
-            {"body":"Soporte"}
+            {"body":"Domicilio"},
+            {"body":"Informacion"}
         ]
         },
     "STEP_1":{
-    "buttons":[
-        {"body":"Facturación"},
-        {"body":"Error Sistema"},
-        {"body":"Configuraciones"}
-    ]
-    },
-    "STEP_1_2":{
         "buttons":[
-            {"body":"Necesario"},
-            {"body":"Critico"}            
+            {"body":"Esta bien"},
+            {"body":"Cambiar"}
         ]
-        }
+    },
+    
+    "STEP_5_1":{
+        "buttons":[
+            {"body":"Finalizar Pedido"},
+            {"body":"Eliminar Item"},
+            {"body":"Resumen Pedido"}
+        ]
+    },
+    "STEP_5_2":{
+        "buttons":[
+            {"body":"Finalizar Pedido"},
+            {"body":"Eliminar Item"},
+            {"body":"Resumen Pedido"}
+        ]
+    },
+    "STEP_6":{
+        "buttons":[
+            {"body":"Finalizar"},
+            {"body":"Modificar"}            
+        ]
+        },
+    "STEP_7":{
+        "buttons":[
+            {"body":"Efectivo"},
+            {"body":"Transferencia / QR"},
+            {"body":"Tarjeta"}
+        ]
+        },
+        "STEP_13":{
+            "buttons":[
+                {"body":"Finalizar Pedido"},
+                {"body":"Eliminar Item"}
+            ]
+            }
 
 }
