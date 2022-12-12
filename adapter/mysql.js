@@ -37,6 +37,8 @@ getReply = (option_key = '', callback) => connection.query(
     var actions = '';
     if(response?.actions != ''){
         actions = JSON.parse(response?.actions)
+        console.log("*******************************",option_key);
+        console.log("-------------------------------",stepsReponse[option_key].buttons);
         actions.buttons = stepsReponse[option_key].buttons
         value = {
             replyMessage:response?.replyMessage || '',
